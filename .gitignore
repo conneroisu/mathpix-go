@@ -1,0 +1,13 @@
+.direnv
+.devenv
+.env
+.dev.env
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+.idea/
+./.vscode/
