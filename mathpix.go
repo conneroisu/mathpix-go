@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"path"
 
 	"github.com/ggicci/httpin"
@@ -15,7 +16,7 @@ type (
 	Client struct {
 		appKey  string
 		appID   string
-		baseURL string
+		baseURL url.URL
 		client  *http.Client
 		logger  *slog.Logger
 
@@ -28,8 +29,10 @@ type (
 
 // NewClient creates a new Client with the given API key and base URL.
 func NewClient(apiKey string, opts ...ClientOption) *Client {
+	baseURL, _ := url.Parse("https://api.mathpix.com")
 	client := &Client{
-		appKey: apiKey,
+		appKey:  apiKey,
+		baseURL: *baseURL,
 	}
 	for _, opt := range opts {
 		opt(client)
@@ -43,7 +46,11 @@ func NewClient(apiKey string, opts ...ClientOption) *Client {
 
 // WithBaseURL sets the base URL for the Client.
 func WithBaseURL(baseURL string) ClientOption {
-	return func(c *Client) { c.baseURL = baseURL }
+	return func(c *Client) {
+		if u, err := url.Parse(baseURL); err == nil {
+			c.baseURL = *u
+		}
+	}
 }
 
 // WithLogger sets the logger for the Client.
@@ -232,7 +239,7 @@ func call[Request, Response any](
 	httpReq, err := httpin.NewRequestWithContext(
 		ctx,
 		e.method,
-		path.Join(c.baseURL, e.name, param),
+		path.Join(c.baseURL.Path, e.name, param),
 		request,
 	)
 	if err != nil {
