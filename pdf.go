@@ -60,6 +60,39 @@ type ResponseDocument struct {
 	ErrorInfo map[string]interface{} `json:"error_info,omitempty"`
 }
 
+type resultRequestPayload struct {
+	ResultRequest ResultRequest `json:"-"`
+}
+
+// ResultRequest represents the request to the result endpoint.
+type ResultRequest struct {
+	PDFID string `json:"pdf_id"`
+}
+
+// ResponseConversionResult represents the response from the result endpoint.
+type ResponseConversionResult struct {
+	Status     ConversionStatus                       `json:"status"`
+	Coversions map[ConversionFormats]ConversionStatus `json:"conversion_status"`
+}
+
+// ConversionStatus represents the status of a document conversion.
+type ConversionStatus struct {
+	Status ConversionStatusType `json:"status"`
+}
+
+// ConversionStatusType represents the status of a document conversion.
+// string
+type ConversionStatusType string
+
+const (
+	// ConversionStatusProcessing represents a document conversion that is in progress.
+	ConversionStatusProcessing ConversionStatusType = "processing"
+	// ConversionStatusCompleted represents a document conversion that is completed.
+	ConversionStatusCompleted ConversionStatusType = "completed"
+	// ConversionStatusError represents a document conversion that has failed.
+	ConversionStatusError ConversionStatusType = "error"
+)
+
 // InputFormat represents supported input file formats for Mathpix processing.
 // It is used to specify the format of documents being submitted for processing.
 type InputFormat string

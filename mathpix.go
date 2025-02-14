@@ -13,7 +13,7 @@ import (
 // Client is the main struct for the mathpix-go library.
 type (
 	Client struct {
-		appKey  string
+		apiKey  string
 		appID   string
 		baseURL url.URL
 		client  *http.Client
@@ -27,17 +27,18 @@ type (
 )
 
 // NewClient creates a new Client with the given API key and base URL.
-func NewClient(apiKey string, opts ...ClientOption) *Client {
+func NewClient(apiKey, appID string, opts ...ClientOption) *Client {
 	baseURL, _ := url.Parse("https://api.mathpix.com")
 	client := &Client{
-		appKey:  apiKey,
+		apiKey:  apiKey,
+		appID:   appID,
 		baseURL: *baseURL,
 	}
 	for _, opt := range opts {
 		opt(client)
 	}
 	client.SetCommonHeaders = func(req *http.Request) {
-		req.Header.Set("app_key", client.appKey)
+		req.Header.Set("app_key", client.apiKey)
 		req.Header.Set("app_id", client.appID)
 	}
 	return client
@@ -91,6 +92,20 @@ func (c *Client) Pdf(
 			Payload: request,
 		},
 		"",
+	)
+}
+
+// PdfResult represents the result of a PDF Result request.
+func (c *Client) PdfResult(
+	ctx context.Context,
+	request *ResultRequest,
+) (*ResponseConversionResult, error) {
+	return call(
+		ctx,
+		c,
+		conversionStatusEndpoint,
+		nil,
+		request.PDFID,
 	)
 }
 
@@ -200,6 +215,10 @@ var (
 	documentsEndpoint = endpoint[*documentRequestPayload, *ResponseDocument]{
 		method: http.MethodPost,
 		name:   "v3/pdf",
+	}
+	conversionStatusEndpoint = endpoint[*resultRequestPayload, *ResponseConversionResult]{
+		method: http.MethodGet,
+		name:   "v3/status",
 	}
 	batchEndpoint = endpoint[*postBatchRequestPayload, *ResponsePostBatch]{
 		method: http.MethodPost,
