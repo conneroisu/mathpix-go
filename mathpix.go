@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
-	"path"
 
 	"github.com/ggicci/httpin"
 )
@@ -239,7 +238,7 @@ func call[Request, Response any](
 	httpReq, err := httpin.NewRequestWithContext(
 		ctx,
 		e.method,
-		path.Join(c.baseURL.Path, e.name, param),
+		c.baseURL.JoinPath(e.name, param).String(),
 		request,
 	)
 	if err != nil {
