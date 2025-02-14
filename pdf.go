@@ -71,7 +71,7 @@ type ResultRequest struct {
 
 // ResponseConversionResult represents the response from the result endpoint.
 type ResponseConversionResult struct {
-	Status     ConversionStatus                       `json:"status"`
+	Status     ConversionStatusType                   `json:"status"`
 	Coversions map[ConversionFormats]ConversionStatus `json:"conversion_status"`
 }
 
