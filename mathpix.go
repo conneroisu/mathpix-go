@@ -63,6 +63,55 @@ func WithClient(client *http.Client) ClientOption {
 	return func(c *Client) { c.client = client }
 }
 
+type (
+	// endpoint is the endpoint type representing the request and response of an api endpoint.
+	endpoint[Request, Response any] struct {
+		_      [0]Request
+		_      [0]Response
+		name   string
+		method string
+	}
+)
+
+var (
+	imagesEndpoint = endpoint[*imageRequestPayload, *ImageResponse]{
+		method: http.MethodPost,
+		name:   "v3/image",
+	}
+	documentsEndpoint = endpoint[*documentRequestPayload, *ResponseDocument]{
+		method: http.MethodPost,
+		name:   "v3/pdf",
+	}
+	conversionStatusEndpoint = endpoint[*resultRequestPayload, *ResponseConversionResult]{
+		method: http.MethodGet,
+		name:   "v3/status",
+	}
+	batchEndpoint = endpoint[*postBatchRequestPayload, *ResponsePostBatch]{
+		method: http.MethodPost,
+		name:   "v3/batch",
+	}
+	strokesEndpoint = endpoint[*requestStrokesPayload, *StrokesResponse]{
+		method: http.MethodPost,
+		name:   "v3/strokes",
+	}
+	appTokensEndpoint = endpoint[*appTokenPayload, *AppTokenResponse]{
+		method: http.MethodPost,
+		name:   "v3/app-tokens",
+	}
+	ocrResultsEndpoint = endpoint[*ocrResultsPayload, *OCRResultsResponse]{
+		method: http.MethodGet,
+		name:   "v3/ocr-results",
+	}
+	getBatchEndpoint = endpoint[*getBatchPayload, *GetBatchResponse]{
+		method: http.MethodGet,
+		name:   "v3/batch",
+	}
+	requestUsageEndpoint = endpoint[*usagePayload, *ResponseUsage]{
+		method: http.MethodPost,
+		name:   "v3/usage",
+	}
+)
+
 // Image sends an image to the Mathpix API.
 func (c *Client) Image(
 	ctx context.Context,
@@ -196,55 +245,6 @@ func (c *Client) RequestUsage(
 		"",
 	)
 }
-
-type (
-	// endpoint is the endpoint type representing the request and response of an api endpoint.
-	endpoint[Request, Response any] struct {
-		_      [0]Request
-		_      [0]Response
-		name   string
-		method string
-	}
-)
-
-var (
-	imagesEndpoint = endpoint[*imageRequestPayload, *ImageResponse]{
-		method: http.MethodPost,
-		name:   "v3/image",
-	}
-	documentsEndpoint = endpoint[*documentRequestPayload, *ResponseDocument]{
-		method: http.MethodPost,
-		name:   "v3/pdf",
-	}
-	conversionStatusEndpoint = endpoint[*resultRequestPayload, *ResponseConversionResult]{
-		method: http.MethodGet,
-		name:   "v3/status",
-	}
-	batchEndpoint = endpoint[*postBatchRequestPayload, *ResponsePostBatch]{
-		method: http.MethodPost,
-		name:   "v3/batch",
-	}
-	strokesEndpoint = endpoint[*requestStrokesPayload, *StrokesResponse]{
-		method: http.MethodPost,
-		name:   "v3/strokes",
-	}
-	appTokensEndpoint = endpoint[*appTokenPayload, *AppTokenResponse]{
-		method: http.MethodPost,
-		name:   "v3/app-tokens",
-	}
-	ocrResultsEndpoint = endpoint[*ocrResultsPayload, *OCRResultsResponse]{
-		method: http.MethodGet,
-		name:   "v3/ocr-results",
-	}
-	getBatchEndpoint = endpoint[*getBatchPayload, *GetBatchResponse]{
-		method: http.MethodGet,
-		name:   "v3/batch",
-	}
-	requestUsageEndpoint = endpoint[*usagePayload, *ResponseUsage]{
-		method: http.MethodPost,
-		name:   "v3/usage",
-	}
-)
 
 // call is a method that takes an endpoint and make a call to it.
 func call[Request, Response any](
