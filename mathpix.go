@@ -139,7 +139,7 @@ func (c *Client) RequestStrokes(
 // SearchResults searches for OCR results.
 func (c *Client) SearchResults(
 	ctx context.Context,
-	request *SearchParams,
+	request *OCRSearchRequest,
 ) (*OCRResultsResponse, error) {
 	return call(
 		ctx,
