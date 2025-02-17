@@ -1,17 +1,27 @@
 package mathpix
 
+import "fmt"
+
 type (
 	// ErrorResponse is the error response struct.
 	ErrorResponse struct {
-		Error Error `json:"error"`
+		Error APIError `json:"error"`
 	}
-	// Error is the error struct.
-	Error struct {
+	// APIError is the error struct.
+	APIError struct {
 		ID      string  `json:"id"`
 		Message *string `json:"message,omitempty"`
 		Detail  *string `json:"detail,omitempty"`
 	}
 )
+
+// Error implements the error interface for APIError.
+func (e *APIError) Error() string {
+	if e.Message == nil {
+		return e.ID
+	}
+	return fmt.Sprintf(`%s: %s`, e.ID, *e.Message)
+}
 
 // ErrorID is a specific error type in the system
 type ErrorID string
@@ -115,4 +125,38 @@ func (e ErrorID) HTTPStatusCode() int {
 // String returns the string representation of the ErrorID
 func (e ErrorID) String() string {
 	return string(e)
+}
+
+func isErrorID(str string) bool {
+	switch ErrorID(str) {
+	case ErrHTTPUnauthorized,
+		ErrHTTPMaxRequests,
+		ErrJSONSyntax,
+		ErrImageMissing,
+		ErrImageDownload,
+		ErrImageDecode,
+		ErrImageNoContent,
+		ErrImageNotSupported,
+		ErrImageMaxSize,
+		ErrStrokesMissing,
+		ErrStrokesSyntaxError,
+		ErrStrokesNoContent,
+		ErrOptsBadCallback,
+		ErrOptsUnknownOCR,
+		ErrOptsUnknownFormat,
+		ErrOptsNumberRequired,
+		ErrOptsValueOutOfRange,
+		ErrPDFEncrypted,
+		ErrPDFUnknownID,
+		ErrPDFMissing,
+		ErrPDFPageLimitExceeded,
+		ErrMathConfidence,
+		ErrMathSyntax,
+		ErrBatchUnknownID,
+		ErrSysException,
+		ErrSysRequestTooLarge:
+		return true
+	default:
+		return false
+	}
 }

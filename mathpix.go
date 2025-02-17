@@ -1,8 +1,10 @@
 package mathpix
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -227,25 +229,36 @@ func call[Request, Response any](
 		return
 	}
 	defer res.Body.Close()
+
+	resp, apiErr, err := nopDecode[APIError](res.Body)
+	if err != nil {
+		return response, err
+	}
 	if res.StatusCode < http.StatusOK ||
-		res.StatusCode >= http.StatusBadRequest {
-		return response, handleErrorResp(res, request, response)
+		res.StatusCode >= http.StatusBadRequest ||
+		isErrorID(apiErr.ID) {
+		return response, &apiErr
 	}
 
-	err = json.NewDecoder(res.Body).Decode(&response)
+	err = json.NewDecoder(resp).Decode(&response)
 	if err != nil {
 		return
 	}
 	return response, nil
 }
 
-func handleErrorResp[
-	Request,
-	Response any,
-](
-	_ *http.Response,
-	_ Request,
-	_ Response,
-) error {
-	return nil
+// nopDecode decodes the request body into the given type.
+func nopDecode[T any](
+	r io.Reader,
+) (io.Reader, T, error) {
+	var (
+		buf bytes.Buffer
+		v   T
+	)
+	tee := io.TeeReader(r, &buf)
+	err := json.NewDecoder(tee).Decode(&v)
+	if err != nil {
+		return nil, v, err
+	}
+	return &buf, v, nil
 }
