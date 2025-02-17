@@ -9,7 +9,7 @@ type (
 	}
 	// APIError is the error struct.
 	APIError struct {
-		ID      string  `json:"id"`
+		ID      ErrorID `json:"id"`
 		Message *string `json:"message,omitempty"`
 		Detail  *string `json:"detail,omitempty"`
 	}
@@ -18,9 +18,9 @@ type (
 // Error implements the error interface for APIError.
 func (e *APIError) Error() string {
 	if e.Message == nil {
-		return e.ID
+		return e.ID.String()
 	}
-	return fmt.Sprintf(`%s: %s`, e.ID, *e.Message)
+	return fmt.Sprintf(`%s: %s`, e.ID.String(), *e.Message)
 }
 
 // ErrorID is a specific error type in the system
@@ -127,8 +127,8 @@ func (e ErrorID) String() string {
 	return string(e)
 }
 
-func isErrorID(str string) bool {
-	switch ErrorID(str) {
+func isErrorID(in ErrorID) bool {
+	switch in {
 	case ErrHTTPUnauthorized,
 		ErrHTTPMaxRequests,
 		ErrJSONSyntax,
