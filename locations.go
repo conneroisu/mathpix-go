@@ -164,69 +164,51 @@ type (
 	ResultRequest struct {
 		PDFID string `json:"pdf_id"`
 	}
-
 	// AppTokenRequest represents the request parameters for creating a temporary app token
 	// from the Mathpix API endpoint POST /v3/app-tokens
 	AppTokenRequest struct {
 		// IncludeStrokesSessionID determines if the response should include a strokes_session_id
 		// for live update drawing functionality
 		IncludeStrokesSessionID bool `json:"include_strokes_session_id,omitempty"`
-
 		// Expires specifies the duration in seconds for how long the app_token will last
 		// Default: 300 seconds (5 minutes)
 		// Range: 30-43200 seconds (12 hours) for regular app_token
 		// Range: 30-300 seconds (5 minutes) when IncludeStrokesSessionID is true
 		Expires int64 `json:"expires,omitempty"`
 	}
-
 	// OCRSearchRequest represents the query parameters for the OCR results search endpoint
 	OCRSearchRequest struct {
 		// Page number for pagination (starts from 1)
 		Page int `json:"page,omitempty"`
-
 		// Number of results per page
 		PerPage int `json:"per_page,omitempty"`
-
 		// Starting datetime (inclusive) for filtering results
 		FromDate time.Time `json:"from_date,omitempty"`
-
 		// Ending datetime (exclusive) for filtering results
 		ToDate time.Time `json:"to_date,omitempty"`
-
 		// Filter results by app ID
 		AppID string `json:"app_id,omitempty"`
-
 		// Filter results containing specific text in result.text
 		Text string `json:"text,omitempty"`
-
 		// Filter results containing specific text in result.text_display
 		TextDisplay string `json:"text_display,omitempty"`
-
 		// Filter results containing specific text in result.latex_styled
 		LatexStyled string `json:"latex_styled,omitempty"`
-
 		// Filter results by tags
 		Tags []string `json:"tags,omitempty"`
-
 		// Filter results containing printed text/math
 		IsPrinted *bool `json:"is_printed,omitempty"`
-
 		// Filter results containing handwritten text/math
 		IsHandwritten *bool `json:"is_handwritten,omitempty"`
-
 		// Filter results containing tables
 		ContainsTable *bool `json:"contains_table,omitempty"`
-
 		// Filter results containing chemistry diagrams
 		ContainsChemistry *bool `json:"contains_chemistry,omitempty"`
-
 		// Filter results containing diagrams
 		ContainsDiagram *bool `json:"contains_diagram,omitempty"`
-
 		// Filter results containing triangles
 		ContainsTriangle *bool `json:"contains_triangle,omitempty"`
 	}
-
 	// RequestUsage is the payload for the request to get the ocr usage of the API.
 	RequestUsage struct {
 		FromDate time.Time `in:"query=from_date"`
@@ -263,12 +245,10 @@ type (
 		// HTML contains optional annotated HTML output
 		HTML string `json:"html,omitempty"`
 	}
-
 	// OCRResultsResponse represents the top-level response from the OCR results endpoint
 	OCRResultsResponse struct {
 		OCRResults []OCRResult `json:"ocr_results"`
 	}
-
 	// ImageResponse represents the main response structure from the Math Recognition API.
 	// It contains all information about the recognized mathematical expressions,
 	// text content, and various metadata about the processed image.
@@ -350,22 +330,17 @@ type (
 		Status     ConversionStatusType                   `json:"status"`
 		Coversions map[ConversionFormats]ConversionStatus `json:"conversion_status"`
 	}
-
 	// AppTokenResponse represents the response from the Mathpix API when creating
 	// a temporary app token
 	AppTokenResponse struct {
 		// AppToken is the temporary token to be used in headers of v3/text, v3/latex,
 		// or v3/strokes requests
 		AppToken string `json:"app_token"`
-
 		// StrokesSessionID is only included if requested via IncludeStrokesSessionID
 		// Used for live digital ink pricing and SDKs
 		StrokesSessionID string `json:"strokes_session_id,omitempty"`
-
 		// AppTokenExpiresAt specifies when the app_token will expire in Unix time (seconds)
 		AppTokenExpiresAt int64 `json:"app_token_expires_at"`
-
-		headers http.Header `json:"-"`
 	}
 )
 
@@ -709,79 +684,57 @@ type (
 	OCRResult struct {
 		// ISO timestamp of recorded result information
 		Timestamp string `json:"timestamp"`
-
 		// API endpoint used for upload (eg `/v3/text`, `/v3/strokes`, ...)
 		Endpoint string `json:"endpoint"`
-
 		// Difference between timestamp and when request was received
 		Duration float64 `json:"duration"`
-
 		// Request body arguments
 		RequestArgs *OCRRequestArgs `json:"request_args"`
-
 		// Result body for request
 		Result *ResultBody `json:"result"`
-
 		// An object of detections for each request
 		Detections *Detections `json:"detections"`
 	}
-
 	// OCRRequestArgs represents the original request arguments
 	OCRRequestArgs struct {
 		// Tags associated with the request
 		Tags []string `json:"tags,omitempty"`
-
 		// Requested output formats
 		Formats []string `json:"formats,omitempty"`
 	}
-
 	// ResultBody represents the OCR processing result body
 	ResultBody struct {
 		// Extracted text content
 		Text string `json:"text"`
-
 		// Confidence score of the OCR result
 		Confidence float64 `json:"confidence"`
-
 		// Indicates if the text is printed
 		IsPrinted bool `json:"is_printed"`
-
 		// Unique identifier for the request
 		RequestID string `json:"request_id"`
-
 		// Indicates if the text is handwritten
 		IsHandwritten bool `json:"is_handwritten"`
-
 		// Confidence rate of the OCR result
 		ConfidenceRate float64 `json:"confidence_rate"`
-
 		// Number of degrees the image was automatically rotated
 		AutoRotateDegrees int `json:"auto_rotate_degrees"`
-
 		// Confidence score for the auto-rotation
 		AutoRotateConfidence float64 `json:"auto_rotate_confidence"`
-
 		// Version of the OCR model used
 		Version string `json:"version"`
 	}
-
 	// Detections represents various content type detection flags
 	Detections struct {
 		// Indicates presence of chemical formulas/diagrams
 		ContainsChemistry bool `json:"contains_chemistry"`
-
 		// Indicates presence of diagrams
 		ContainsDiagram bool `json:"contains_diagram"`
-
 		// Indicates presence of handwritten content
 		IsHandwritten bool `json:"is_handwritten"`
-
 		// Indicates presence of printed content
 		IsPrinted bool `json:"is_printed"`
-
 		// Indicates presence of tables
 		ContainsTable bool `json:"contains_table"`
-
 		// Indicates presence of triangles
 		ContainsTriangle bool `json:"contains_triangle"`
 	}
