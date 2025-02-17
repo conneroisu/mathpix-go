@@ -66,6 +66,65 @@ func WithClient(client *http.Client) ClientOption {
 	return func(c *Client) { c.client = client }
 }
 
+// call is a method that takes an endpoint and make a call to it.
+func call[Request, Response any](
+	ctx context.Context,
+	c *Client,
+	e endpoint[Request, Response],
+	request Request,
+	param string,
+) (response Response, err error) {
+	httpReq, err := httpin.NewRequestWithContext(
+		ctx,
+		e.method,
+		c.baseURL.JoinPath(e.name, param).String(),
+		request,
+	)
+	if err != nil {
+		return response, err
+	}
+	c.SetCommonHeaders(httpReq)
+	contentType := httpReq.Header.Get("Content-Type")
+	if contentType == "" {
+		httpReq.Header.Set("Content-Type", "application/json")
+	}
+	res, err := c.client.Do(httpReq)
+	if err != nil {
+		return
+	}
+	defer res.Body.Close()
+	resp, apiErr, err := nopDecode[APIError](res.Body)
+	if err != nil {
+		return response, err
+	}
+	if res.StatusCode < http.StatusOK ||
+		res.StatusCode >= http.StatusBadRequest ||
+		isErrorID(apiErr.ID) {
+		return response, &apiErr
+	}
+	err = json.NewDecoder(resp).Decode(&response)
+	if err != nil {
+		return
+	}
+	return response, nil
+}
+
+// nopDecode decodes the request body into the given type.
+func nopDecode[T any](
+	r io.Reader,
+) (io.Reader, T, error) {
+	var (
+		buf bytes.Buffer
+		v   T
+	)
+	tee := io.TeeReader(r, &buf)
+	err := json.NewDecoder(tee).Decode(&v)
+	if err != nil {
+		return nil, v, err
+	}
+	return &buf, v, nil
+}
+
 // Image sends an image to the Mathpix API.
 func (c *Client) Image(
 	ctx context.Context,
@@ -133,9 +192,15 @@ func (c *Client) RequestStrokes(
 	ctx context.Context,
 	request *RequestStrokes,
 ) (*StrokesResponse, error) {
-	return call(ctx, c, strokesEndpoint, &requestStrokesPayload{
-		Payload: request,
-	}, "")
+	return call(
+		ctx,
+		c,
+		strokesEndpoint,
+		&requestStrokesPayload{
+			Payload: request,
+		},
+		"",
+	)
 }
 
 // SearchResults searches for OCR results.
@@ -198,67 +263,4 @@ func (c *Client) RequestUsage(
 		},
 		"",
 	)
-}
-
-// call is a method that takes an endpoint and make a call to it.
-func call[Request, Response any](
-	ctx context.Context,
-	c *Client,
-	e endpoint[Request, Response],
-	request Request,
-	param string,
-) (response Response, err error) {
-	httpReq, err := httpin.NewRequestWithContext(
-		ctx,
-		e.method,
-		c.baseURL.JoinPath(e.name, param).String(),
-		request,
-	)
-	if err != nil {
-		return response, err
-	}
-	c.SetCommonHeaders(httpReq)
-
-	contentType := httpReq.Header.Get("Content-Type")
-	if contentType == "" {
-		httpReq.Header.Set("Content-Type", "application/json")
-	}
-
-	res, err := c.client.Do(httpReq)
-	if err != nil {
-		return
-	}
-	defer res.Body.Close()
-
-	resp, apiErr, err := nopDecode[APIError](res.Body)
-	if err != nil {
-		return response, err
-	}
-	if res.StatusCode < http.StatusOK ||
-		res.StatusCode >= http.StatusBadRequest ||
-		isErrorID(apiErr.ID) {
-		return response, &apiErr
-	}
-
-	err = json.NewDecoder(resp).Decode(&response)
-	if err != nil {
-		return
-	}
-	return response, nil
-}
-
-// nopDecode decodes the request body into the given type.
-func nopDecode[T any](
-	r io.Reader,
-) (io.Reader, T, error) {
-	var (
-		buf bytes.Buffer
-		v   T
-	)
-	tee := io.TeeReader(r, &buf)
-	err := json.NewDecoder(tee).Decode(&v)
-	if err != nil {
-		return nil, v, err
-	}
-	return &buf, v, nil
 }
