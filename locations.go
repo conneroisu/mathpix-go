@@ -81,6 +81,9 @@ type (
 	ocrResultsPayload struct {
 		Payload *OCRSearchRequest `in:"body=json"`
 	}
+	usagePayload struct {
+		Payload *RequestUsage `json:"payload"`
+	}
 )
 
 // Requests
@@ -222,6 +225,14 @@ type (
 
 		// Filter results containing triangles
 		ContainsTriangle *bool `json:"contains_triangle,omitempty"`
+	}
+
+	// RequestUsage is the payload for the request to get the ocr usage of the API.
+	RequestUsage struct {
+		FromDate time.Time `in:"query=from_date"`
+		ToDate   time.Time `in:"query=to_date"`
+		GroupBy  string    `in:"query=group_by,required"`
+		Timespan string    `in:"query=timespan,required"`
 	}
 )
 
@@ -773,6 +784,18 @@ type (
 
 		// Indicates presence of triangles
 		ContainsTriangle bool `json:"contains_triangle"`
+	}
+	// ResponseUsage is the response for the request to get the ocr usage of the API.
+	//
+	// https://docs.mathpix.com/?shell#query-ocr-usage
+	ResponseUsage struct {
+		OcrUsage []struct {
+			FromDate        time.Time `json:"from_date"`
+			AppID           []string  `json:"app_id"`
+			UsageType       string    `json:"usage_type"`
+			RequestArgsHash []string  `json:"request_args_hash"`
+			Count           int       `json:"count"`
+		} `json:"ocr_usage"`
 	}
 )
 
