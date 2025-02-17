@@ -20,15 +20,15 @@ var (
 		method: http.MethodPost,
 		name:   "v3/image",
 	}
-	documentsEndpoint = endpoint[*documentRequestPayload, *ResponseDocument]{
+	documentsEndpoint = endpoint[*documentRequestPayload, *DocumentResponse]{
 		method: http.MethodPost,
 		name:   "v3/pdf",
 	}
-	conversionStatusEndpoint = endpoint[*resultRequestPayload, *ResponseConversionResult]{
+	conversionStatusEndpoint = endpoint[*resultRequestPayload, *ConversionResultResponse]{
 		method: http.MethodGet,
 		name:   "v3/status",
 	}
-	batchEndpoint = endpoint[*postBatchRequestPayload, *ResponsePostBatch]{
+	batchEndpoint = endpoint[*postBatchRequestPayload, *PostBatchResponse]{
 		method: http.MethodPost,
 		name:   "v3/batch",
 	}
@@ -48,7 +48,7 @@ var (
 		method: http.MethodGet,
 		name:   "v3/batch",
 	}
-	requestUsageEndpoint = endpoint[*usagePayload, *ResponseUsage]{
+	requestUsageEndpoint = endpoint[*usagePayload, *UsageResponse]{
 		method: http.MethodPost,
 		name:   "v3/usage",
 	}
@@ -302,13 +302,13 @@ type (
 		// It changes when training data or processing methods are updated
 		Version string `json:"version"`
 	}
-	// ResponsePostBatch is the response from the batch endpoint.
+	// PostBatchResponse is the response from the batch endpoint.
 	//
 	// The response contains only a unique batch_id value.
 	// Even if the request includes a callback, there is no guarantee the callback will run successfully (because of a transient network failure, for example).
 	// The preferred approach is to wait an appropriate length of time (about one second for every five images in the batch) and then do a GET on /v3/batch/:id where :id is the batch_id value.
 	// The GET request must contain the same app_id and app_key headers as the POST to /v3/batch.
-	ResponsePostBatch struct {
+	PostBatchResponse struct {
 		BatchID string `json:"batch_id"`
 	}
 	// GetBatchResponse is the response from the GET /v3/batch/:id endpoint.
@@ -316,8 +316,8 @@ type (
 		Keys    []string               `json:"keys"`
 		Results map[string]interface{} `json:"results"`
 	}
-	// ResponseDocument represents the response from the PDF processing endpoint.
-	ResponseDocument struct {
+	// DocumentResponse represents the response from the PDF processing endpoint.
+	DocumentResponse struct {
 		// PDFID is the tracking ID to get status and result
 		PDFID string `json:"pdf_id"`
 		// Error contains US locale error message if present
@@ -325,8 +325,8 @@ type (
 		// ErrorInfo contains detailed error information
 		ErrorInfo map[string]interface{} `json:"error_info,omitempty"`
 	}
-	// ResponseConversionResult represents the response from the result endpoint.
-	ResponseConversionResult struct {
+	// ConversionResultResponse represents the response from the result endpoint.
+	ConversionResultResponse struct {
 		Status     ConversionStatusType                   `json:"status"`
 		Coversions map[ConversionFormats]ConversionStatus `json:"conversion_status"`
 	}
@@ -341,6 +341,18 @@ type (
 		StrokesSessionID string `json:"strokes_session_id,omitempty"`
 		// AppTokenExpiresAt specifies when the app_token will expire in Unix time (seconds)
 		AppTokenExpiresAt int64 `json:"app_token_expires_at"`
+	}
+	// UsageResponse is the response for the request to get the ocr usage of the API.
+	//
+	// https://docs.mathpix.com/?shell#query-ocr-usage
+	UsageResponse struct {
+		OcrUsage []struct {
+			FromDate        time.Time `json:"from_date"`
+			AppID           []string  `json:"app_id"`
+			UsageType       string    `json:"usage_type"`
+			RequestArgsHash []string  `json:"request_args_hash"`
+			Count           int       `json:"count"`
+		} `json:"ocr_usage"`
 	}
 )
 
@@ -737,18 +749,6 @@ type (
 		ContainsTable bool `json:"contains_table"`
 		// Indicates presence of triangles
 		ContainsTriangle bool `json:"contains_triangle"`
-	}
-	// ResponseUsage is the response for the request to get the ocr usage of the API.
-	//
-	// https://docs.mathpix.com/?shell#query-ocr-usage
-	ResponseUsage struct {
-		OcrUsage []struct {
-			FromDate        time.Time `json:"from_date"`
-			AppID           []string  `json:"app_id"`
-			UsageType       string    `json:"usage_type"`
-			RequestArgsHash []string  `json:"request_args_hash"`
-			Count           int       `json:"count"`
-		} `json:"ocr_usage"`
 	}
 )
 

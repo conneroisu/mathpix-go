@@ -14,33 +14,32 @@ Package api contains the main entry point for the pegwings.ai API.
 
 ## Index
 
+- [Constants](<#constants>)
 - [type AlphabetsAllowed](<#AlphabetsAllowed>)
 - [type AppTokenRequest](<#AppTokenRequest>)
-  - [func NewAppTokenRequest\(\) \*AppTokenRequest](<#NewAppTokenRequest>)
-  - [func \(r \*AppTokenRequest\) WithExpiration\(seconds int64\) \*AppTokenRequest](<#AppTokenRequest.WithExpiration>)
-  - [func \(r \*AppTokenRequest\) WithStrokesSession\(\) \*AppTokenRequest](<#AppTokenRequest.WithStrokesSession>)
 - [type AppTokenResponse](<#AppTokenResponse>)
-  - [func \(r \*AppTokenResponse\) SetHeader\(headers http.Header\)](<#AppTokenResponse.SetHeader>)
 - [type Client](<#Client>)
-  - [func NewClient\(apiKey string, opts ...ClientOption\) \*Client](<#NewClient>)
-  - [func \(c \*Client\) Batch\(ctx context.Context, request \*RequestPostBatch\) \(\*ResponsePostBatch, error\)](<#Client.Batch>)
+  - [func NewClient\(apiKey, appID string, opts ...ClientOption\) \*Client](<#NewClient>)
+  - [func \(c \*Client\) Batch\(ctx context.Context, request \*RequestPostBatch\) \(\*PostBatchResponse, error\)](<#Client.Batch>)
   - [func \(c \*Client\) GetBatch\(ctx context.Context, batchID string\) \(\*GetBatchResponse, error\)](<#Client.GetBatch>)
   - [func \(c \*Client\) Image\(ctx context.Context, request \*ImageRequest\) \(\*ImageResponse, error\)](<#Client.Image>)
   - [func \(c \*Client\) NewClientToken\(ctx context.Context, request \*AppTokenRequest\) \(\*AppTokenResponse, error\)](<#Client.NewClientToken>)
-  - [func \(c \*Client\) Pdf\(ctx context.Context, request \*RequestDocument\) \(\*ResponseDocument, error\)](<#Client.Pdf>)
+  - [func \(c \*Client\) Pdf\(ctx context.Context, request \*RequestDocument\) \(\*DocumentResponse, error\)](<#Client.Pdf>)
+  - [func \(c \*Client\) PdfResult\(ctx context.Context, request \*ResultRequest\) \(\*ConversionResultResponse, error\)](<#Client.PdfResult>)
   - [func \(c \*Client\) RequestStrokes\(ctx context.Context, request \*RequestStrokes\) \(\*StrokesResponse, error\)](<#Client.RequestStrokes>)
-  - [func \(c \*Client\) RequestUsage\(ctx context.Context, request \*RequestUsage\) \(\*ResponseUsage, error\)](<#Client.RequestUsage>)
-  - [func \(c \*Client\) SearchResults\(ctx context.Context, request \*SearchParams\) \(\*OCRResultsResponse, error\)](<#Client.SearchResults>)
+  - [func \(c \*Client\) RequestUsage\(ctx context.Context, request \*RequestUsage\) \(\*UsageResponse, error\)](<#Client.RequestUsage>)
+  - [func \(c \*Client\) SearchResults\(ctx context.Context, request \*OCRSearchRequest\) \(\*OCRResultsResponse, error\)](<#Client.SearchResults>)
 - [type ClientOption](<#ClientOption>)
   - [func WithBaseURL\(baseURL string\) ClientOption](<#WithBaseURL>)
   - [func WithClient\(client \*http.Client\) ClientOption](<#WithClient>)
   - [func WithLogger\(logger \*slog.Logger\) ClientOption](<#WithLogger>)
 - [type ConversionFormats](<#ConversionFormats>)
+- [type ConversionResultResponse](<#ConversionResultResponse>)
+- [type ConversionStatus](<#ConversionStatus>)
+- [type ConversionStatusType](<#ConversionStatusType>)
 - [type Data](<#Data>)
 - [type DataOptions](<#DataOptions>)
   - [func NewDataOptions\(\) \*DataOptions](<#NewDataOptions>)
-  - [func \(o \*DataOptions\) Clone\(\) \*DataOptions](<#DataOptions.Clone>)
-  - [func \(o \*DataOptions\) Reset\(\)](<#DataOptions.Reset>)
   - [func \(o \*DataOptions\) WithAsciimath\(\) \*DataOptions](<#DataOptions.WithAsciimath>)
   - [func \(o \*DataOptions\) WithLatex\(\) \*DataOptions](<#DataOptions.WithLatex>)
   - [func \(o \*DataOptions\) WithMathML\(\) \*DataOptions](<#DataOptions.WithMathML>)
@@ -50,8 +49,8 @@ Package api contains the main entry point for the pegwings.ai API.
 - [type DetectedAlphabet](<#DetectedAlphabet>)
 - [type Detections](<#Detections>)
 - [type DocumentOutputFormat](<#DocumentOutputFormat>)
-  - [func \(f DocumentOutputFormat\) IsValid\(\) bool](<#DocumentOutputFormat.IsValid>)
   - [func \(f DocumentOutputFormat\) String\(\) string](<#DocumentOutputFormat.String>)
+- [type DocumentResponse](<#DocumentResponse>)
 - [type Error](<#Error>)
 - [type ErrorID](<#ErrorID>)
   - [func \(e ErrorID\) HTTPStatusCode\(\) int](<#ErrorID.HTTPStatusCode>)
@@ -72,29 +71,112 @@ Package api contains the main entry point for the pegwings.ai API.
   - [func \(f InputFormat\) String\(\) string](<#InputFormat.String>)
 - [type LabelData](<#LabelData>)
 - [type LineData](<#LineData>)
+- [type OCRRequestArgs](<#OCRRequestArgs>)
 - [type OCRResult](<#OCRResult>)
 - [type OCRResultsResponse](<#OCRResultsResponse>)
-  - [func \(r \*OCRResultsResponse\) SetHeader\(header http.Header\)](<#OCRResultsResponse.SetHeader>)
+- [type OCRSearchRequest](<#OCRSearchRequest>)
 - [type Position](<#Position>)
-- [type RequestArgs](<#RequestArgs>)
+- [type PostBatchResponse](<#PostBatchResponse>)
 - [type RequestDocument](<#RequestDocument>)
 - [type RequestPostBatch](<#RequestPostBatch>)
 - [type RequestStrokes](<#RequestStrokes>)
 - [type RequestUsage](<#RequestUsage>)
-- [type ResponseDocument](<#ResponseDocument>)
 - [type ResponseFormat](<#ResponseFormat>)
-- [type ResponsePostBatch](<#ResponsePostBatch>)
-- [type ResponseUsage](<#ResponseUsage>)
 - [type ResultBody](<#ResultBody>)
-- [type SearchParams](<#SearchParams>)
+- [type ResultRequest](<#ResultRequest>)
 - [type ShapeData](<#ShapeData>)
 - [type StrokeCoordinates](<#StrokeCoordinates>)
 - [type StrokesData](<#StrokesData>)
 - [type StrokesResponse](<#StrokesResponse>)
-  - [func \(r \*StrokesResponse\) SetHeader\(h http.Header\)](<#StrokesResponse.SetHeader>)
+- [type UsageResponse](<#UsageResponse>)
 - [type VertexData](<#VertexData>)
 - [type WordData](<#WordData>)
 
+
+## Constants
+
+<a name="FormatText"></a>Supporting Data Types
+
+```go
+const (
+    // FormatText represents the Mathpix image format
+    FormatText ResponseFormat = "text"
+    // FormatHTML represents the html rendered from text via mathpix-markdown-it
+    FormatHTML ResponseFormat = "html"
+    // FormatData represents the data computed from text as specified in the data_options request parameter
+    FormatData ResponseFormat = "data"
+    // FormatLatexStyled represents the styled Latex, returned only in cases that the whole image can be reduced to a single equation
+    FormatLatexStyled ResponseFormat = "latex_styled"
+    // JPEG represents JPEG image formats (*.jpeg, *.jpg, *.jpe)
+    JPEG ImageFormat = "jpeg"
+    // PNG represents Portable Network Graphics format (*.png)
+    PNG ImageFormat = "png"
+    // BMP represents Windows bitmap formats (*.bmp, *.dib)
+    BMP ImageFormat = "bmp"
+    // JPEG2000 represents JPEG 2000 format (*.jp2)
+    JPEG2000 ImageFormat = "jp2"
+    // WEBP represents WebP format (*.webp)
+    WEBP ImageFormat = "webp"
+    // PNM represents Portable image formats (*.pbm, *.pgm, *.ppm *.pxm, *.pnm)
+    PNM ImageFormat = "pnm"
+    // PFM represents PFM format (*.pfm)
+    PFM ImageFormat = "pfm"
+    // SUNRASTER represents Sun raster formats (*.sr, *.ras)
+    SUNRASTER ImageFormat = "sunraster"
+    // TIFF represents TIFF formats (*.tiff, *.tif)
+    TIFF ImageFormat = "tiff"
+    // OPENEXR represents OpenEXR Image format (*.exr)
+    OPENEXR ImageFormat = "exr"
+    // HDR represents Radiance HDR formats (*.hdr, *.pic)
+    HDR ImageFormat = "hdr"
+    // GDAL represents Raster and Vector geospatial data supported by GDAL
+    GDAL ImageFormat = "gdal"
+    // ConversionStatusProcessing represents a document conversion that is in progress.
+    ConversionStatusProcessing ConversionStatusType = "processing"
+    // ConversionStatusCompleted represents a document conversion that is completed.
+    ConversionStatusCompleted ConversionStatusType = "completed"
+    // ConversionStatusError represents a document conversion that has failed.
+    ConversionStatusError ConversionStatusType = "error"
+    // InputFormatPDF represents PDF document format
+    InputFormatPDF InputFormat = "pdf"
+    // InputFormatEPUB represents EPUB ebook format
+    InputFormatEPUB InputFormat = "epub"
+    // InputFormatDOCX represents Microsoft Word DOCX format
+    InputFormatDOCX InputFormat = "docx"
+    // InputFormatPPTX represents Microsoft PowerPoint PPTX format
+    InputFormatPPTX InputFormat = "pptx"
+    // InputFormatAZW represents Amazon Kindle AZW format
+    InputFormatAZW InputFormat = "azw"
+    // InputFormatAZW3 represents Amazon Kindle AZW3 format
+    InputFormatAZW3 InputFormat = "azw3"
+    // InputFormatKFX represents Amazon Kindle KFX format
+    InputFormatKFX InputFormat = "kfx"
+    // InputFormatMOBI represents Mobipocket ebook format
+    InputFormatMOBI InputFormat = "mobi"
+    // InputFormatDJVU represents DjVu document format
+    InputFormatDJVU InputFormat = "djvu"
+    // InputFormatDOC represents Microsoft Word DOC format
+    InputFormatDOC InputFormat = "doc"
+    // InputFormatWPD represents WordPerfect Document format
+    InputFormatWPD InputFormat = "wpd"
+    // InputFormatODT represents OpenDocument Text format
+    InputFormatODT InputFormat = "odt"
+    // DocumentFormatMMD represents Mathpix Markdown specification format.
+    DocumentFormatMMD DocumentOutputFormat = "mmd"
+    // DocumentFormatMD represents standard Markdown specification format.
+    DocumentFormatMD DocumentOutputFormat = "md"
+    // DocumentFormatDOCX represents Microsoft Word DOCX format>
+    DocumentFormatDOCX DocumentOutputFormat = "docx"
+    // DocumentFormatLaTeXZip represents LaTeX format with included images in ZIP.
+    DocumentFormatLaTeXZip DocumentOutputFormat = "latex_zip"
+    // DocumentFormatHTML represents rendered Mathpix Markdown content in HTML.
+    DocumentFormatHTML DocumentOutputFormat = "html"
+    // DocumentFormatPDFWithHTML represents PDF with HTML rendering.
+    DocumentFormatPDFWithHTML DocumentOutputFormat = "pdf_html"
+    // DocumentFormatPDFWithLaTeX represents PDF with selectable LaTeX equations.
+    DocumentFormatPDFWithLaTeX DocumentOutputFormat = "pdf_latex"
+)
+```
 
 <a name="AlphabetsAllowed"></a>
 ## type AlphabetsAllowed
@@ -105,7 +187,6 @@ AlphabetsAllowed represents options for specifying which alphabets are allowed i
 type AlphabetsAllowed struct {
     // Formats specifies the allowed format types
     Formats []string `json:"formats"`
-
     // AlphabetsAllowed is a map controlling which alphabets are allowed in the output
     // Keys correspond to alphabet codes (e.g. "hi" for Hindi, "ru" for Russian)
     // false value indicates the alphabet is disabled, true or omission indicates it's allowed
@@ -126,7 +207,6 @@ type AppTokenRequest struct {
     // IncludeStrokesSessionID determines if the response should include a strokes_session_id
     // for live update drawing functionality
     IncludeStrokesSessionID bool `json:"include_strokes_session_id,omitempty"`
-
     // Expires specifies the duration in seconds for how long the app_token will last
     // Default: 300 seconds (5 minutes)
     // Range: 30-43200 seconds (12 hours) for regular app_token
@@ -134,33 +214,6 @@ type AppTokenRequest struct {
     Expires int64 `json:"expires,omitempty"`
 }
 ```
-
-<a name="NewAppTokenRequest"></a>
-### func NewAppTokenRequest
-
-```go
-func NewAppTokenRequest() *AppTokenRequest
-```
-
-NewAppTokenRequest creates a new AppTokenRequest with default values
-
-<a name="AppTokenRequest.WithExpiration"></a>
-### func \(\*AppTokenRequest\) WithExpiration
-
-```go
-func (r *AppTokenRequest) WithExpiration(seconds int64) *AppTokenRequest
-```
-
-WithExpiration sets the expiration time in seconds for the app token It validates the input based on whether strokes session is enabled
-
-<a name="AppTokenRequest.WithStrokesSession"></a>
-### func \(\*AppTokenRequest\) WithStrokesSession
-
-```go
-func (r *AppTokenRequest) WithStrokesSession() *AppTokenRequest
-```
-
-WithStrokesSession enables the strokes session ID in the request
 
 <a name="AppTokenResponse"></a>
 ## type AppTokenResponse
@@ -172,25 +225,13 @@ type AppTokenResponse struct {
     // AppToken is the temporary token to be used in headers of v3/text, v3/latex,
     // or v3/strokes requests
     AppToken string `json:"app_token"`
-
     // StrokesSessionID is only included if requested via IncludeStrokesSessionID
     // Used for live digital ink pricing and SDKs
     StrokesSessionID string `json:"strokes_session_id,omitempty"`
-
     // AppTokenExpiresAt specifies when the app_token will expire in Unix time (seconds)
     AppTokenExpiresAt int64 `json:"app_token_expires_at"`
-    // contains filtered or unexported fields
 }
 ```
-
-<a name="AppTokenResponse.SetHeader"></a>
-### func \(\*AppTokenResponse\) SetHeader
-
-```go
-func (r *AppTokenResponse) SetHeader(headers http.Header)
-```
-
-SetHeader sets the headers from the response.
 
 <a name="Client"></a>
 ## type Client
@@ -208,7 +249,7 @@ type Client struct {
 ### func NewClient
 
 ```go
-func NewClient(apiKey string, opts ...ClientOption) *Client
+func NewClient(apiKey, appID string, opts ...ClientOption) *Client
 ```
 
 NewClient creates a new Client with the given API key and base URL.
@@ -217,7 +258,7 @@ NewClient creates a new Client with the given API key and base URL.
 ### func \(\*Client\) Batch
 
 ```go
-func (c *Client) Batch(ctx context.Context, request *RequestPostBatch) (*ResponsePostBatch, error)
+func (c *Client) Batch(ctx context.Context, request *RequestPostBatch) (*PostBatchResponse, error)
 ```
 
 Batch sends a batch of images to the Mathpix API.
@@ -253,10 +294,19 @@ NewClientToken creates a new temporary app token.
 ### func \(\*Client\) Pdf
 
 ```go
-func (c *Client) Pdf(ctx context.Context, request *RequestDocument) (*ResponseDocument, error)
+func (c *Client) Pdf(ctx context.Context, request *RequestDocument) (*DocumentResponse, error)
 ```
 
 Pdf sends a PDF to the Mathpix API.
+
+<a name="Client.PdfResult"></a>
+### func \(\*Client\) PdfResult
+
+```go
+func (c *Client) PdfResult(ctx context.Context, request *ResultRequest) (*ConversionResultResponse, error)
+```
+
+PdfResult represents the result of a PDF Result request.
 
 <a name="Client.RequestStrokes"></a>
 ### func \(\*Client\) RequestStrokes
@@ -271,7 +321,7 @@ RequestStrokes sends a strokes recognition request to the Mathpix API.
 ### func \(\*Client\) RequestUsage
 
 ```go
-func (c *Client) RequestUsage(ctx context.Context, request *RequestUsage) (*ResponseUsage, error)
+func (c *Client) RequestUsage(ctx context.Context, request *RequestUsage) (*UsageResponse, error)
 ```
 
 RequestUsage sends a request to get the ocr usage of the API.
@@ -280,7 +330,7 @@ RequestUsage sends a request to get the ocr usage of the API.
 ### func \(\*Client\) SearchResults
 
 ```go
-func (c *Client) SearchResults(ctx context.Context, request *SearchParams) (*OCRResultsResponse, error)
+func (c *Client) SearchResults(ctx context.Context, request *OCRSearchRequest) (*OCRResultsResponse, error)
 ```
 
 SearchResults searches for OCR results.
@@ -345,6 +395,38 @@ type ConversionFormats struct {
 }
 ```
 
+<a name="ConversionResultResponse"></a>
+## type ConversionResultResponse
+
+ConversionResultResponse represents the response from the result endpoint.
+
+```go
+type ConversionResultResponse struct {
+    Status     ConversionStatusType                   `json:"status"`
+    Coversions map[ConversionFormats]ConversionStatus `json:"conversion_status"`
+}
+```
+
+<a name="ConversionStatus"></a>
+## type ConversionStatus
+
+ConversionStatus represents the status of a document conversion.
+
+```go
+type ConversionStatus struct {
+    Status ConversionStatusType `json:"status"`
+}
+```
+
+<a name="ConversionStatusType"></a>
+## type ConversionStatusType
+
+ConversionStatusType represents the status of a document conversion. string
+
+```go
+type ConversionStatusType string
+```
+
 <a name="Data"></a>
 ## type Data
 
@@ -355,7 +437,6 @@ type Data struct {
     // Type specifies the format of the mathematical expression
     // Common values: "asciimath", "latex"
     Type string `json:"type"`
-
     // Value contains the actual mathematical expression in the specified format
     Value string `json:"value"`
 }
@@ -370,20 +451,15 @@ DataOptions represents configuration for various output formats of image data. A
 type DataOptions struct {
     // IncludeSVG determines whether to include math SVG in HTML and data formats
     IncludeSVG bool `json:"include_svg,omitempty"`
-
     // IncludeTableHTML determines whether to include HTML for tables in HTML and data outputs
     IncludeTableHTML bool `json:"include_table_html,omitempty"`
-
     // IncludeLatex determines whether to include math mode latex in data and HTML outputs
     IncludeLatex bool `json:"include_latex,omitempty"`
-
     // IncludeTSV determines whether to include tab separated values (TSV) in data
     // and HTML outputs (tables only)
     IncludeTSV bool `json:"include_tsv,omitempty"`
-
     // IncludeAsciimath determines whether to include asciimath in data and HTML outputs
     IncludeAsciimath bool `json:"include_asciimath,omitempty"`
-
     // IncludeMathML determines whether to include mathml in data and HTML outputs
     IncludeMathML bool `json:"include_mathml,omitempty"`
 }
@@ -397,24 +473,6 @@ func NewDataOptions() *DataOptions
 ```
 
 NewDataOptions creates a new DataOptions instance with default values. By default, all options are set to false.
-
-<a name="DataOptions.Clone"></a>
-### func \(\*DataOptions\) Clone
-
-```go
-func (o *DataOptions) Clone() *DataOptions
-```
-
-Clone creates a deep copy of the DataOptions.
-
-<a name="DataOptions.Reset"></a>
-### func \(\*DataOptions\) Reset
-
-```go
-func (o *DataOptions) Reset()
-```
-
-Reset sets all options back to their default values \(false\).
 
 <a name="DataOptions.WithAsciimath"></a>
 ### func \(\*DataOptions\) WithAsciimath
@@ -479,37 +537,26 @@ DetectedAlphabet indicates which writing systems were found in the processed ima
 type DetectedAlphabet struct {
     // English characters detected
     English bool `json:"en"`
-
     // Hindi (Devanagari script) characters detected
     Hindi bool `json:"hi"`
-
     // Chinese characters detected
     Chinese bool `json:"zh"`
-
     // Japanese (Hiragana or Katakana) characters detected
     Japanese bool `json:"ja"`
-
     // Korean (Hangul Jamo) characters detected
     Korean bool `json:"ko"`
-
     // Russian characters detected
     Russian bool `json:"ru"`
-
     // Thai characters detected
     Thai bool `json:"th"`
-
     // Tamil characters detected
     Tamil bool `json:"ta"`
-
     // Telugu characters detected
     Telugu bool `json:"te"`
-
     // Gujarati characters detected
     Gujarati bool `json:"gu"`
-
     // Bengali characters detected
     Bengali bool `json:"bn"`
-
     // Vietnamese characters detected
     Vietnamese bool `json:"vi"`
 }
@@ -524,19 +571,14 @@ Detections represents various content type detection flags
 type Detections struct {
     // Indicates presence of chemical formulas/diagrams
     ContainsChemistry bool `json:"contains_chemistry"`
-
     // Indicates presence of diagrams
     ContainsDiagram bool `json:"contains_diagram"`
-
     // Indicates presence of handwritten content
     IsHandwritten bool `json:"is_handwritten"`
-
     // Indicates presence of printed content
     IsPrinted bool `json:"is_printed"`
-
     // Indicates presence of tables
     ContainsTable bool `json:"contains_table"`
-
     // Indicates presence of triangles
     ContainsTriangle bool `json:"contains_triangle"`
 }
@@ -551,36 +593,6 @@ DocumentOutputFormat represents supported output file formats from Mathpix proce
 type DocumentOutputFormat string
 ```
 
-<a name="DocumentFormatMMD"></a>Output format constants define all supported document output types.
-
-```go
-const (
-    // DocumentFormatMMD represents Mathpix Markdown specification format.
-    DocumentFormatMMD DocumentOutputFormat = "mmd"
-    // DocumentFormatMD represents standard Markdown specification format.
-    DocumentFormatMD DocumentOutputFormat = "md"
-    // DocumentFormatDOCX represents Microsoft Word DOCX format>
-    DocumentFormatDOCX DocumentOutputFormat = "docx"
-    // DocumentFormatLaTeXZip represents LaTeX format with included images in ZIP.
-    DocumentFormatLaTeXZip DocumentOutputFormat = "latex_zip"
-    // DocumentFormatHTML represents rendered Mathpix Markdown content in HTML.
-    DocumentFormatHTML DocumentOutputFormat = "html"
-    // DocumentFormatPDFWithHTML represents PDF with HTML rendering.
-    DocumentFormatPDFWithHTML DocumentOutputFormat = "pdf_html"
-    // DocumentFormatPDFWithLaTeX represents PDF with selectable LaTeX equations.
-    DocumentFormatPDFWithLaTeX DocumentOutputFormat = "pdf_latex"
-)
-```
-
-<a name="DocumentOutputFormat.IsValid"></a>
-### func \(DocumentOutputFormat\) IsValid
-
-```go
-func (f DocumentOutputFormat) IsValid() bool
-```
-
-IsValid checks if the output format is supported by comparing against known valid formats. Returns true if the format is supported, false otherwise.
-
 <a name="DocumentOutputFormat.String"></a>
 ### func \(DocumentOutputFormat\) String
 
@@ -589,6 +601,22 @@ func (f DocumentOutputFormat) String() string
 ```
 
 String returns the string representation of the OutputFormat. This method satisfies the Stringer interface.
+
+<a name="DocumentResponse"></a>
+## type DocumentResponse
+
+DocumentResponse represents the response from the PDF processing endpoint.
+
+```go
+type DocumentResponse struct {
+    // PDFID is the tracking ID to get status and result
+    PDFID string `json:"pdf_id"`
+    // Error contains US locale error message if present
+    Error string `json:"error,omitempty"`
+    // ErrorInfo contains detailed error information
+    ErrorInfo map[string]interface{} `json:"error_info,omitempty"`
+}
+```
 
 <a name="Error"></a>
 ## type Error
@@ -747,10 +775,8 @@ ErrorInfo provides detailed information about any errors that occurred during pr
 type ErrorInfo struct {
     // Code is a machine-readable error code
     Code string `json:"code"`
-
     // Message is a human-readable error description
     Message string `json:"message"`
-
     // Details contains any additional error-specific information
     Details any `json:"details,omitempty"`
 }
@@ -776,10 +802,8 @@ GeometryData represents geometric information about elements detected in the ima
 type GeometryData struct {
     // Position contains the pixel coordinates for this geometric element
     Position *Position `json:"position,omitempty"`
-
     // ShapeList contains all shapes detected in the diagram
     ShapeList []ShapeData `json:"shape_list"`
-
     // LabelList contains all labels associated with the geometric elements
     LabelList []LabelData `json:"label_list"`
 }
@@ -804,48 +828,6 @@ ImageFormat represents the image format of an image string
 
 ```go
 type ImageFormat string
-```
-
-<a name="JPEG"></a>
-
-```go
-const (
-    // JPEG represents JPEG image formats (*.jpeg, *.jpg, *.jpe)
-    JPEG ImageFormat = "jpeg"
-
-    // PNG represents Portable Network Graphics format (*.png)
-    PNG ImageFormat = "png"
-
-    // BMP represents Windows bitmap formats (*.bmp, *.dib)
-    BMP ImageFormat = "bmp"
-
-    // JPEG2000 represents JPEG 2000 format (*.jp2)
-    JPEG2000 ImageFormat = "jp2"
-
-    // WEBP represents WebP format (*.webp)
-    WEBP ImageFormat = "webp"
-
-    // PNM represents Portable image formats (*.pbm, *.pgm, *.ppm *.pxm, *.pnm)
-    PNM ImageFormat = "pnm"
-
-    // PFM represents PFM format (*.pfm)
-    PFM ImageFormat = "pfm"
-
-    // SUNRASTER represents Sun raster formats (*.sr, *.ras)
-    SUNRASTER ImageFormat = "sunraster"
-
-    // TIFF represents TIFF formats (*.tiff, *.tif)
-    TIFF ImageFormat = "tiff"
-
-    // OPENEXR represents OpenEXR Image format (*.exr)
-    OPENEXR ImageFormat = "exr"
-
-    // HDR represents Radiance HDR formats (*.hdr, *.pic)
-    HDR ImageFormat = "hdr"
-
-    // GDAL represents Raster and Vector geospatial data supported by GDAL
-    GDAL ImageFormat = "gdal"
-)
 ```
 
 <a name="ParseExtension"></a>
@@ -914,59 +896,42 @@ The response can include different types of data depending on the request parame
 type ImageResponse struct {
     // RequestID is a unique identifier for debugging purposes
     RequestID string `json:"request_id,omitempty"`
-
     // Text contains the recognized text content in plain text format
     Text string `json:"text,omitempty"`
-
     // LatexStyled contains the mathematical expression in LaTeX format
     // This is provided when the image contains a single equation
     LatexStyled string `json:"latex_styled,omitempty"`
-
     // Confidence represents the estimated probability (0-1) that the entire recognition is 100% correct
     Confidence float64 `json:"confidence,omitempty"`
-
     // ConfidenceRate represents the estimated confidence (0-1) of output quality
     ConfidenceRate float64 `json:"confidence_rate,omitempty"`
-
     // LineData contains information about each line of text detected in the image
     // Only present when include_line_data is set to true in the request
     LineData []LineData `json:"line_data,omitempty"`
-
     // WordData contains information about individual words detected in the image
     // Only present when include_word_data is set to true in the request
     WordData []WordData `json:"word_data,omitempty"`
-
     // Data contains the mathematical expressions in different formats (e.g., ASCII math, LaTeX)
     Data []Data `json:"data,omitempty"`
-
     // HTML contains the annotated HTML output of the recognized content
     HTML string `json:"html,omitempty"`
-
     // DetectedAlphabets indicates which writing systems were found in the image
     DetectedAlphabets *DetectedAlphabet `json:"detected_alphabets,omitempty"`
-
     // IsPrinted indicates whether printed text was detected in the image
     IsPrinted bool `json:"is_printed,omitempty"`
-
     // IsHandwritten indicates whether handwritten content was detected in the image
     IsHandwritten bool `json:"is_handwritten,omitempty"`
-
     // AutoRotateConfidence represents the estimated probability (0-1) that the image needs rotation
     AutoRotateConfidence float64 `json:"auto_rotate_confidence,omitempty"`
-
     // GeometryData contains geometric information about detected elements in the image
     GeometryData []GeometryData `json:"geometry_data,omitempty"`
-
     // AutoRotateDegrees suggests the rotation angle needed to correct image orientation
     // Possible values are 0, 90, -90, 180
     AutoRotateDegrees int `json:"auto_rotate_degrees,omitempty"`
-
     // Error contains any error message in US locale format
     Error string `json:"error,omitempty"`
-
     // ErrorInfo contains detailed information about any errors that occurred
     ErrorInfo *ErrorInfo `json:"error_info,omitempty"`
-
     // Version is an opaque string useful for tracking differences in results
     // It changes when training data or processing methods are updated
     Version string `json:"version"`
@@ -980,37 +945,6 @@ InputFormat represents supported input file formats for Mathpix processing. It i
 
 ```go
 type InputFormat string
-```
-
-<a name="InputFormatPDF"></a>Input format constants define all supported document input types.
-
-```go
-const (
-    // InputFormatPDF represents PDF document format
-    InputFormatPDF InputFormat = "pdf"
-    // InputFormatEPUB represents EPUB ebook format
-    InputFormatEPUB InputFormat = "epub"
-    // InputFormatDOCX represents Microsoft Word DOCX format
-    InputFormatDOCX InputFormat = "docx"
-    // InputFormatPPTX represents Microsoft PowerPoint PPTX format
-    InputFormatPPTX InputFormat = "pptx"
-    // InputFormatAZW represents Amazon Kindle AZW format
-    InputFormatAZW InputFormat = "azw"
-    // InputFormatAZW3 represents Amazon Kindle AZW3 format
-    InputFormatAZW3 InputFormat = "azw3"
-    // InputFormatKFX represents Amazon Kindle KFX format
-    InputFormatKFX InputFormat = "kfx"
-    // InputFormatMOBI represents Mobipocket ebook format
-    InputFormatMOBI InputFormat = "mobi"
-    // InputFormatDJVU represents DjVu document format
-    InputFormatDJVU InputFormat = "djvu"
-    // InputFormatDOC represents Microsoft Word DOC format
-    InputFormatDOC InputFormat = "doc"
-    // InputFormatWPD represents WordPerfect Document format
-    InputFormatWPD InputFormat = "wpd"
-    // InputFormatODT represents OpenDocument Text format
-    InputFormatODT InputFormat = "odt"
-)
 ```
 
 <a name="InputFormat.IsValid"></a>
@@ -1040,16 +974,12 @@ LabelData represents text labels associated with geometric elements. Labels can 
 type LabelData struct {
     // Position contains the pixel coordinates for this label
     Position Position `json:"position"`
-
     // Text contains the OCR-detected text content of the label
     Text string `json:"text"`
-
     // LaTeX contains the LaTeX representation of the label content
     LaTeX string `json:"latex"`
-
     // Confidence represents the estimated probability (0-1) that recognition is 100% correct
     Confidence float64 `json:"confidence,omitempty"`
-
     // ConfidenceRate represents the estimated confidence (0-1) of output quality
     ConfidenceRate float64 `json:"confidence_rate,omitempty"`
 }
@@ -1070,45 +1000,47 @@ type LineData struct {
     // "text", "math", "table", "diagram", "equation_number", "diagram_info",
     // "chart", "form_field", "code", "pseudocode", "page_info"
     Type string `json:"type"`
-
     // Subtype provides additional type information for specific content types:
     // - For diagrams: "chemistry", "triangle"
     // - For charts: "column", "bar", "line", "pie", "area", "scatter", "analytical"
     // - For form fields: "checkbox", "circle", "dashed"
     Subtype string `json:"subtype,omitempty"`
-
     // Cnt represents the contour of the line as a list of [x,y] pixel coordinates
     Cnt [][2]int `json:"cnt"`
-
     // Included indicates whether this line is included in the top-level OCR result
     Included bool `json:"included"`
-
     // IsPrinted indicates whether the line contains printed text
     IsPrinted bool `json:"is_printed"`
-
     // IsHandwritten indicates whether the line contains handwritten text
     IsHandwritten bool `json:"is_handwritten"`
-
     // ErrorID provides the reason why the line was not included in the final result
     ErrorID string `json:"error_id,omitempty"`
-
     // Text contains the recognized content for this line in Mathpix Markdown format
     Text string `json:"text,omitempty"`
-
     // Confidence represents the estimated probability (0-1) that recognition is 100% correct
     Confidence float64 `json:"confidence,omitempty"`
-
     // ConfidenceRate represents the estimated confidence (0-1) of output quality
     ConfidenceRate float64 `json:"confidence_rate,omitempty"`
-
     // AfterHyphen indicates if this line follows a line that ended with a hyphen
     AfterHyphen bool `json:"after_hyphen,omitempty"`
-
     // HTML contains the annotated HTML output for the line
     HTML string `json:"html,omitempty"`
-
     // Data contains additional data objects associated with this line
     Data []Data `json:"data,omitempty"`
+}
+```
+
+<a name="OCRRequestArgs"></a>
+## type OCRRequestArgs
+
+OCRRequestArgs represents the original request arguments
+
+```go
+type OCRRequestArgs struct {
+    // Tags associated with the request
+    Tags []string `json:"tags,omitempty"`
+    // Requested output formats
+    Formats []string `json:"formats,omitempty"`
 }
 ```
 
@@ -1121,19 +1053,14 @@ OCRResult represents a single OCR result entry with information about the proces
 type OCRResult struct {
     // ISO timestamp of recorded result information
     Timestamp string `json:"timestamp"`
-
     // API endpoint used for upload (eg `/v3/text`, `/v3/strokes`, ...)
     Endpoint string `json:"endpoint"`
-
     // Difference between timestamp and when request was received
     Duration float64 `json:"duration"`
-
     // Request body arguments
-    RequestArgs *RequestArgs `json:"request_args"`
-
+    RequestArgs *OCRRequestArgs `json:"request_args"`
     // Result body for request
     Result *ResultBody `json:"result"`
-
     // An object of detections for each request
     Detections *Detections `json:"detections"`
 }
@@ -1147,18 +1074,48 @@ OCRResultsResponse represents the top\-level response from the OCR results endpo
 ```go
 type OCRResultsResponse struct {
     OCRResults []OCRResult `json:"ocr_results"`
-    // contains filtered or unexported fields
 }
 ```
 
-<a name="OCRResultsResponse.SetHeader"></a>
-### func \(\*OCRResultsResponse\) SetHeader
+<a name="OCRSearchRequest"></a>
+## type OCRSearchRequest
+
+OCRSearchRequest represents the query parameters for the OCR results search endpoint
 
 ```go
-func (r *OCRResultsResponse) SetHeader(header http.Header)
+type OCRSearchRequest struct {
+    // Page number for pagination (starts from 1)
+    Page int `json:"page,omitempty"`
+    // Number of results per page
+    PerPage int `json:"per_page,omitempty"`
+    // Starting datetime (inclusive) for filtering results
+    FromDate time.Time `json:"from_date,omitempty"`
+    // Ending datetime (exclusive) for filtering results
+    ToDate time.Time `json:"to_date,omitempty"`
+    // Filter results by app ID
+    AppID string `json:"app_id,omitempty"`
+    // Filter results containing specific text in result.text
+    Text string `json:"text,omitempty"`
+    // Filter results containing specific text in result.text_display
+    TextDisplay string `json:"text_display,omitempty"`
+    // Filter results containing specific text in result.latex_styled
+    LatexStyled string `json:"latex_styled,omitempty"`
+    // Filter results by tags
+    Tags []string `json:"tags,omitempty"`
+    // Filter results containing printed text/math
+    IsPrinted *bool `json:"is_printed,omitempty"`
+    // Filter results containing handwritten text/math
+    IsHandwritten *bool `json:"is_handwritten,omitempty"`
+    // Filter results containing tables
+    ContainsTable *bool `json:"contains_table,omitempty"`
+    // Filter results containing chemistry diagrams
+    ContainsChemistry *bool `json:"contains_chemistry,omitempty"`
+    // Filter results containing diagrams
+    ContainsDiagram *bool `json:"contains_diagram,omitempty"`
+    // Filter results containing triangles
+    ContainsTriangle *bool `json:"contains_triangle,omitempty"`
+}
 ```
-
-SetHeader sets the header for the response.
 
 <a name="Position"></a>
 ## type Position
@@ -1169,24 +1126,21 @@ Position represents pixel coordinates in the image. The coordinate system starts
 type Position struct {
     // X coordinate, counting from top left
     X   int `json:"x"`
-
     // Y coordinate, counting from top left
     Y   int `json:"y"`
 }
 ```
 
-<a name="RequestArgs"></a>
-## type RequestArgs
+<a name="PostBatchResponse"></a>
+## type PostBatchResponse
 
-RequestArgs represents the original request arguments
+PostBatchResponse is the response from the batch endpoint.
+
+The response contains only a unique batch\_id value. Even if the request includes a callback, there is no guarantee the callback will run successfully \(because of a transient network failure, for example\). The preferred approach is to wait an appropriate length of time \(about one second for every five images in the batch\) and then do a GET on /v3/batch/:id where :id is the batch\_id value. The GET request must contain the same app\_id and app\_key headers as the POST to /v3/batch.
 
 ```go
-type RequestArgs struct {
-    // Tags associated with the request
-    Tags []string `json:"tags,omitempty"`
-
-    // Requested output formats
-    Formats []string `json:"formats,omitempty"`
+type PostBatchResponse struct {
+    BatchID string `json:"batch_id"`
 }
 ```
 
@@ -1284,22 +1238,6 @@ type RequestUsage struct {
 }
 ```
 
-<a name="ResponseDocument"></a>
-## type ResponseDocument
-
-ResponseDocument represents the response from the PDF processing endpoint.
-
-```go
-type ResponseDocument struct {
-    // PDFID is the tracking ID to get status and result
-    PDFID string `json:"pdf_id"`
-    // Error contains US locale error message if present
-    Error string `json:"error,omitempty"`
-    // ErrorInfo contains detailed error information
-    ErrorInfo map[string]interface{} `json:"error_info,omitempty"`
-}
-```
-
 <a name="ResponseFormat"></a>
 ## type ResponseFormat
 
@@ -1307,51 +1245,6 @@ ResponseFormat represents the format of the response. string
 
 ```go
 type ResponseFormat string
-```
-
-<a name="FormatText"></a>
-
-```go
-const (
-    // FormatText represents the Mathpix image format
-    FormatText ResponseFormat = "text"
-    // FormatHTML represents the html rendered from text via mathpix-markdown-it
-    FormatHTML ResponseFormat = "html"
-    // FormatData represents the data computed from text as specified in the data_options request parameter
-    FormatData ResponseFormat = "data"
-    // FormatLatexStyled represents the styled Latex, returned only in cases that the whole image can be reduced to a single equation
-    FormatLatexStyled ResponseFormat = "latex_styled"
-)
-```
-
-<a name="ResponsePostBatch"></a>
-## type ResponsePostBatch
-
-ResponsePostBatch is the response from the batch endpoint.
-
-The response contains only a unique batch\_id value. Even if the request includes a callback, there is no guarantee the callback will run successfully \(because of a transient network failure, for example\). The preferred approach is to wait an appropriate length of time \(about one second for every five images in the batch\) and then do a GET on /v3/batch/:id where :id is the batch\_id value. The GET request must contain the same app\_id and app\_key headers as the POST to /v3/batch.
-
-```go
-type ResponsePostBatch struct {
-    BatchID string `json:"batch_id"`
-}
-```
-
-<a name="ResponseUsage"></a>
-## type ResponseUsage
-
-ResponseUsage is the response for the request to get the ocr usage of the API.
-
-```go
-type ResponseUsage struct {
-    OcrUsage []struct {
-        FromDate        time.Time `json:"from_date"`
-        AppID           []string  `json:"app_id"`
-        UsageType       string    `json:"usage_type"`
-        RequestArgsHash []string  `json:"request_args_hash"`
-        Count           int       `json:"count"`
-    } `json:"ocr_usage"`
-}
 ```
 
 <a name="ResultBody"></a>
@@ -1363,84 +1256,33 @@ ResultBody represents the OCR processing result body
 type ResultBody struct {
     // Extracted text content
     Text string `json:"text"`
-
     // Confidence score of the OCR result
     Confidence float64 `json:"confidence"`
-
     // Indicates if the text is printed
     IsPrinted bool `json:"is_printed"`
-
     // Unique identifier for the request
     RequestID string `json:"request_id"`
-
     // Indicates if the text is handwritten
     IsHandwritten bool `json:"is_handwritten"`
-
     // Confidence rate of the OCR result
     ConfidenceRate float64 `json:"confidence_rate"`
-
     // Number of degrees the image was automatically rotated
     AutoRotateDegrees int `json:"auto_rotate_degrees"`
-
     // Confidence score for the auto-rotation
     AutoRotateConfidence float64 `json:"auto_rotate_confidence"`
-
     // Version of the OCR model used
     Version string `json:"version"`
 }
 ```
 
-<a name="SearchParams"></a>
-## type SearchParams
+<a name="ResultRequest"></a>
+## type ResultRequest
 
-SearchParams represents the query parameters for the OCR results search endpoint
+ResultRequest represents the request to the result endpoint.
 
 ```go
-type SearchParams struct {
-    // Page number for pagination (starts from 1)
-    Page int `json:"page,omitempty"`
-
-    // Number of results per page
-    PerPage int `json:"per_page,omitempty"`
-
-    // Starting datetime (inclusive) for filtering results
-    FromDate time.Time `json:"from_date,omitempty"`
-
-    // Ending datetime (exclusive) for filtering results
-    ToDate time.Time `json:"to_date,omitempty"`
-
-    // Filter results by app ID
-    AppID string `json:"app_id,omitempty"`
-
-    // Filter results containing specific text in result.text
-    Text string `json:"text,omitempty"`
-
-    // Filter results containing specific text in result.text_display
-    TextDisplay string `json:"text_display,omitempty"`
-
-    // Filter results containing specific text in result.latex_styled
-    LatexStyled string `json:"latex_styled,omitempty"`
-
-    // Filter results by tags
-    Tags []string `json:"tags,omitempty"`
-
-    // Filter results containing printed text/math
-    IsPrinted *bool `json:"is_printed,omitempty"`
-
-    // Filter results containing handwritten text/math
-    IsHandwritten *bool `json:"is_handwritten,omitempty"`
-
-    // Filter results containing tables
-    ContainsTable *bool `json:"contains_table,omitempty"`
-
-    // Filter results containing chemistry diagrams
-    ContainsChemistry *bool `json:"contains_chemistry,omitempty"`
-
-    // Filter results containing diagrams
-    ContainsDiagram *bool `json:"contains_diagram,omitempty"`
-
-    // Filter results containing triangles
-    ContainsTriangle *bool `json:"contains_triangle,omitempty"`
+type ResultRequest struct {
+    PDFID string `json:"pdf_id"`
 }
 ```
 
@@ -1454,7 +1296,6 @@ type ShapeData struct {
     // Type specifies the type of geometric shape
     // Currently only "triangle" is supported
     Type string `json:"type"`
-
     // VertexList contains all vertices that make up this shape
     VertexList []VertexData `json:"vertex_list"`
 }
@@ -1515,18 +1356,27 @@ type StrokesResponse struct {
     Version string `json:"version"`
     // HTML contains optional annotated HTML output
     HTML string `json:"html,omitempty"`
-    // contains filtered or unexported fields
 }
 ```
 
-<a name="StrokesResponse.SetHeader"></a>
-### func \(\*StrokesResponse\) SetHeader
+<a name="UsageResponse"></a>
+## type UsageResponse
+
+UsageResponse is the response for the request to get the ocr usage of the API.
+
+https://docs.mathpix.com/?shell#query-ocr-usage
 
 ```go
-func (r *StrokesResponse) SetHeader(h http.Header)
+type UsageResponse struct {
+    OcrUsage []struct {
+        FromDate        time.Time `json:"from_date"`
+        AppID           []string  `json:"app_id"`
+        UsageType       string    `json:"usage_type"`
+        RequestArgsHash []string  `json:"request_args_hash"`
+        Count           int       `json:"count"`
+    } `json:"ocr_usage"`
+}
 ```
-
-SetHeader sets the header of the response.
 
 <a name="VertexData"></a>
 ## type VertexData
@@ -1537,10 +1387,8 @@ VertexData represents a vertex in a geometric shape. It includes both the positi
 type VertexData struct {
     // X coordinate for the vertex, counting from top left
     X   int `json:"x"`
-
     // Y coordinate for the vertex, counting from top left
     Y   int `json:"y"`
-
     // EdgeList contains indices of vertices this vertex is connected to
     // Uses 0-based indexing into ShapeData.VertexList
     EdgeList []int `json:"edge_list"`
@@ -1559,25 +1407,19 @@ type WordData struct {
     // Type specifies the content type of the word. Possible values:
     // "text", "math", "table", "diagram", "equation_number"
     Type string `json:"type"`
-
     // Subtype provides additional type information for specific content types:
     // - For diagrams: "chemistry", "triangle"
     // Only set for certain content types
     Subtype string `json:"subtype,omitempty"`
-
     // Cnt represents the contour of the word as a list of [x,y] pixel coordinates
     Cnt [][2]int `json:"cnt"`
-
     // Text contains the recognized content for this word in Mathpix Markdown format
     Text string `json:"text,omitempty"`
-
     // LaTeX contains the math mode LaTeX representation of the word
     // Only present for mathematical content
     LaTeX string `json:"latex,omitempty"`
-
     // Confidence represents the estimated probability (0-1) that recognition is 100% correct
     Confidence float64 `json:"confidence,omitempty"`
-
     // ConfidenceRate represents the estimated confidence (0-1) of output quality
     ConfidenceRate float64 `json:"confidence_rate,omitempty"`
 }

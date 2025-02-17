@@ -84,7 +84,7 @@ func (c *Client) Image(
 func (c *Client) Pdf(
 	ctx context.Context,
 	request *RequestDocument,
-) (*ResponseDocument, error) {
+) (*DocumentResponse, error) {
 	return call(
 		ctx,
 		c,
@@ -100,7 +100,7 @@ func (c *Client) Pdf(
 func (c *Client) PdfResult(
 	ctx context.Context,
 	request *ResultRequest,
-) (*ResponseConversionResult, error) {
+) (*ConversionResultResponse, error) {
 	return call(
 		ctx,
 		c,
@@ -114,7 +114,7 @@ func (c *Client) PdfResult(
 func (c *Client) Batch(
 	ctx context.Context,
 	request *RequestPostBatch,
-) (*ResponsePostBatch, error) {
+) (*PostBatchResponse, error) {
 	return call(
 		ctx,
 		c,
@@ -186,7 +186,7 @@ func (c *Client) GetBatch(
 func (c *Client) RequestUsage(
 	ctx context.Context,
 	request *RequestUsage,
-) (*ResponseUsage, error) {
+) (*UsageResponse, error) {
 	return call(
 		ctx,
 		c,
