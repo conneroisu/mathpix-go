@@ -264,3 +264,23 @@ func (c *Client) RequestUsage(
 		"",
 	)
 }
+
+// Bool returns a pointer to a bool.
+func Bool(b bool) *bool {
+	return &b
+}
+
+// Int returns a pointer to an int.
+func Int(i int) *int {
+	return &i
+}
+
+// String returns a pointer to a string.
+func String(s string) *string {
+	return &s
+}
+
+// Float64 returns a pointer to a float64.
+func Float64(f float64) *float64 {
+	return &f
+}
