@@ -2,6 +2,7 @@ package mathpix
 
 import (
 	"net/http"
+	"slices"
 	"time"
 )
 
@@ -97,10 +98,15 @@ type (
 	ImageRequest struct {
 		// ImageURL is the URL of the image to be processed.
 		// Optional.
-		SourceURL string `json:"src,omitempty"`
+		SourceURL string `json:"src,omitempty" in:"form=src"`
+		// File is a optional filepath for the image data.
+		// If specified, SourceURL will be ignored.
+		File string `json:"file,omitempty" in:"form=file"`
+
+		Options *RequestDocument `json:"options_json" in:"form=options_json"`
 		// Metadata si a map of key value pairs that will be added to the image metadata.
 		// Optional.
-		Metadata map[string]string `json:"metadata,omitempty"`
+		Metadata map[string]string `json:"metadata,omitempty" in:"form=metadata"`
 		// Tags are a list of tags that will be added to the image metadata.
 		// Optional.
 		Tags []string `json:"tags,omitempty"`
@@ -786,12 +792,7 @@ func (f ImageFormat) Extensions() []string {
 
 // IsValidExtension checks if the given file extension is valid for the ImageFormat
 func (f ImageFormat) IsValidExtension(ext string) bool {
-	for _, validExt := range f.Extensions() {
-		if validExt == ext {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(f.Extensions(), ext)
 }
 
 // ParseExtension returns the ImageFormat for a given file extension
